@@ -1,7 +1,6 @@
 <template>
   <div class="home">
     <h1>{{ message }}</h1>
-    <p>My first Vue App!</p>
 
     <p>Name: <input type="text" v-model="newProduct.title"></p>
     <p>Description: <input type="text" v-model="newProduct.description"></p>
@@ -12,7 +11,17 @@
       <p> Name: {{ product.name }}
       <p> Description: {{ product.description }} </p>
       <p> Price: {{ product.price }} </p>
-      </div>
+      <p><button v-on:click="showProduct(product)">More Info</button></p>
+      <hr>
+    </div>
+    <dialog id="show-product">
+      <form method="dialog">
+        <p>Name: {{ currentProduct.name }}</p>
+        <p>Description: {{ currentProduct.description }}</p>
+        <p>Price: {{ currentProduct.price }}</p>
+        <button>Close</button>
+      </form>
+    </dialog>
   </div>
 </template>
 
@@ -23,9 +32,10 @@ import axios from "axios";
 export default {
   data: function() {
     return {
-      message: "Welcome to Vue.js!",
+      message: "Welcome",
       products: [],
       newProduct: {},
+      currentProduct: {},
     };
   },
   created: function() {
@@ -41,13 +51,18 @@ export default {
     createProduct: function() {
       console.log(this.newProduct);
       axios.post("http://localhost:3000/products", {
-        inputName: this.newProduct.name,
+        inputName: this.newProduct.title,
         inputDescription: this.newProduct.description,
         inputPrice: this.newProduct.price,
       }).then(response => {
         console.log(response.data);
       });
     },
-  },
-};
+    showProduct: function(theProduct) {
+      console.log(theProduct);
+      this.currentProduct = theProduct;
+      document.querySelector("#show-product").showModal();
+      }
+    }
+  };
 </script>
