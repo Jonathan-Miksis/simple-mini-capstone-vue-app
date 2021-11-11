@@ -12,13 +12,15 @@
       <p> Description: {{ product.description }} </p>
       <p> Price: {{ product.price }} </p>
       <p><button v-on:click="showProduct(product)">More Info</button></p>
+      <p><button v-on:click="deleteProduct(product)">Delete Product</button>
       <hr>
     </div>
     <dialog id="show-product">
       <form method="dialog">
-        <p>Name: {{ currentProduct.name }}</p>
-        <p>Description: {{ currentProduct.description }}</p>
-        <p>Price: {{ currentProduct.price }}</p>
+        <p>Name: <input type="text" v-model="currentProduct.name"></p>
+        <p>Description: <input type="text" v-model="currentProduct.description"></p>
+        <p>Price: <input type="text" v-model="currentProduct.price"></p>
+        <button v-on:click="updateProduct(currentProduct)">Update Product</button>
         <button>Close</button>
       </form>
     </dialog>
@@ -62,7 +64,23 @@ export default {
       console.log(theProduct);
       this.currentProduct = theProduct;
       document.querySelector("#show-product").showModal();
+      },
+    updateProduct: function(theProduct) {
+      var productEdit = {
+        name: theProduct.name,
+        description: theProduct.description,
+        price: theProduct.price,
       }
+      axios.patch(`http://localhost:3000/products/${theProduct.id}`, productEdit).then(response => { console.log(response.data);
+      });
+    },
+    deleteProduct: function(theProduct) {
+      axios.delete(`http://localhost:3000/products/${theProduct.id}`).then(response => {
+        console.log(response.data);
+        var index = this.products.indexOf(theProduct);
+        this.products.splice(index, 1);
+      });
     }
-  };
+  }
+};
 </script>
