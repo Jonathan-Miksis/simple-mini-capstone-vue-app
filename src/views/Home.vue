@@ -2,6 +2,7 @@
   <div class="home">
     <h1>{{ message }}</h1>
 
+    <p v-for="error in errors" v-bind:key="error.id">{{ error }}</p>
     <p>Name: <input type="text" v-model="newProduct.title"></p>
     <p>Description: <input type="text" v-model="newProduct.description"></p>
     <p>Price: <input type="text" v-model="newProduct.price"></p>
@@ -38,6 +39,7 @@ export default {
       products: [],
       newProduct: {},
       currentProduct: {},
+      errors: []
     };
   },
   created: function() {
@@ -58,6 +60,9 @@ export default {
         inputPrice: this.newProduct.price,
       }).then(response => {
         console.log(response.data);
+        this.newProduct = {};
+      }).catch(error => {
+        console.log(error.response.data.errors);
       });
     },
     showProduct: function(theProduct) {
